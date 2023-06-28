@@ -1,1 +1,4 @@
 FacialExpression/
+.vscode/
+modules/__pycache__/
+__pycache__/
