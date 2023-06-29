@@ -8,7 +8,7 @@ n_neighbors = [3, 5, 7, 9, 11]
 features = []
 labels = []
 
-model = pickle.load(open('../model/knn_model.sav', 'rb'))
+model = pickle.load(open('model/knn_model.sav', 'rb'))
 
 def read_image(img):
     img = cv2.imdecode(np.fromstring(img.read(), np.uint8), 1)
