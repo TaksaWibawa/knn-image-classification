@@ -30,72 +30,73 @@ if __name__ == '__main__':
     df_glcm = pd.DataFrame(columns=['Image Name'])
 
 
-    if submit and uploaded_files:
-        for img in uploaded_files:
-            try:
-                gray = rgb_to_gray(img)
-                features, df_glcm_temp = feature_extraction(gray)
-                prediction = knn_model(features)
-                pred_df = pd.DataFrame({
-                    "Image Name": [img.name],
-                    "Prediction": [prediction[0]]
-                })
-                df_img = pd.concat([df_img, pred_df], ignore_index=True)
-                df_glcm_temp['Image Name'] = img.name
-                df_glcm = pd.concat([df_glcm, df_glcm_temp], ignore_index=True)
-                
-            except Exception as e:
-                st.error("On {}, Error: ".format(img.name, e))
-                
-        # Tampilkan list nama gambar yang diupload
-        st.write("---")
-        st.header("List Gambar")                
-        st.dataframe(df_img['Image Name'], width=800)
+    if submit:
+        if uploaded_files is not None:
+            for img in uploaded_files:
+                try:
+                    gray = rgb_to_gray(img)
+                    features, df_glcm_temp = feature_extraction(gray)
+                    prediction = knn_model(features)
+                    pred_df = pd.DataFrame({
+                        "Image Name": [img.name],
+                        "Prediction": [prediction[0]]
+                    })
+                    df_img = pd.concat([df_img, pred_df], ignore_index=True)
+                    df_glcm_temp['Image Name'] = img.name
+                    df_glcm = pd.concat([df_glcm, df_glcm_temp], ignore_index=True)
 
-        # Tampilkan hasil ekstraksi fitur glcm
-        st.write("---")
-        st.header("Hasil Ekstraksi Fitur GLCM")
-        st.dataframe(df_glcm, width=800)
+                except Exception as e:
+                    st.error("On {}, Error: ".format(img.name, e))
 
-        # Tampilkan hasil prediksi
-        st.write("---")
-        st.header("Hasil Prediksi")
-        st.dataframe(df_img, width=800)
+            # Tampilkan list nama gambar yang diupload
+            st.write("---")
+            st.header("List Gambar")                
+            st.dataframe(df_img['Image Name'], width=800)
 
-        # Tampilkan gambar dan prediksinya
-        st.write("---")
-        st.header("Gambar dengan Prediksi")
-        num_images = len(uploaded_files)
-        num_cols = 6  # Maximum of 6 images per row
-        num_rows = (num_images - 1) // num_cols + 1
-        fig, axes = plt.subplots(num_rows, num_cols, figsize=(20, 5 * num_rows))
+            # Tampilkan hasil ekstraksi fitur glcm
+            st.write("---")
+            st.header("Hasil Ekstraksi Fitur GLCM")
+            st.dataframe(df_glcm, width=800)
 
-        for i, uploaded_file in enumerate(uploaded_files):
-            image = Image.open(uploaded_file)
+            # Tampilkan hasil prediksi
+            st.write("---")
+            st.header("Hasil Prediksi")
+            st.dataframe(df_img, width=800)
 
-            row_idx = i // num_cols
-            col_idx = i % num_cols
+            # Tampilkan gambar dan prediksinya
+            st.write("---")
+            st.header("Gambar dengan Prediksi")
+            num_images = len(uploaded_files)
+            num_cols = 6  # Maximum of 6 images per row
+            num_rows = (num_images - 1) // num_cols + 1
+            fig, axes = plt.subplots(num_rows, num_cols, figsize=(20, 5 * num_rows))
 
-            if num_rows > 1:  # Handle multiple rows
-                ax = axes[row_idx, col_idx]
-            else:  # Handle single row
-                ax = axes[col_idx]
+            for i, uploaded_file in enumerate(uploaded_files):
+                image = Image.open(uploaded_file)
 
-            ax.set_title(df_img['Prediction'][i], fontsize=32)
-            ax.imshow(image, cmap='gray')
-                
-            ax.axis('off')
+                row_idx = i // num_cols
+                col_idx = i % num_cols
 
-            # Remove empty subplots if the number of images is not a multiple of num_cols
-            if num_images % num_cols != 0:
                 if num_rows > 1:  # Handle multiple rows
-                    for j in range(num_images % num_cols, num_cols):
-                        axes[-1, j].axis('off')
+                    ax = axes[row_idx, col_idx]
                 else:  # Handle single row
-                    for j in range(num_images, num_cols):
-                        axes[j].axis('off')
+                    ax = axes[col_idx]
 
-        st.pyplot(fig)
+                ax.set_title(df_img['Prediction'][i], fontsize=32)
+                ax.imshow(image, cmap='gray')
 
-    elif not submit and uploaded_files:
-        st.error("No Image Uploaded")
+                ax.axis('off')
+
+                # Remove empty subplots if the number of images is not a multiple of num_cols
+                if num_images % num_cols != 0:
+                    if num_rows > 1:  # Handle multiple rows
+                        for j in range(num_images % num_cols, num_cols):
+                            axes[-1, j].axis('off')
+                    else:  # Handle single row
+                        for j in range(num_images, num_cols):
+                            axes[j].axis('off')
+
+            st.pyplot(fig)
+            
+        else:
+            st.error("No Image Uploaded")
