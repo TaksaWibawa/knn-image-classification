@@ -1,6 +1,7 @@
 matplotlib==3.7.1
-numpy==1.25.0
-opencv_python==4.7.0.72
+matplotlib-inline==0.1.6
+numpy==1.24.2
+opencv-python-headless==4.7.0.72
 pandas==1.5.3
 Pillow==9.5.0
 Pillow==9.5.0
