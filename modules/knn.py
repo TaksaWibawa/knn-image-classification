@@ -36,7 +36,7 @@ def resize_image(image, target_size=128):
 def feature_extraction(img):
     features = []
     for angle in angles:
-        glcm = graycomatrix(img, [1], [angle], levels=256, symmetric=True, normed=True)
+        glcm = graycomatrix(img, [1], [angle], 256, symmetric=True, normed=True)
         dissimilarity = graycoprops(glcm, 'dissimilarity').ravel()
         correlation = graycoprops(glcm, 'correlation').ravel()
         homogeneity = graycoprops(glcm, 'homogeneity').ravel()

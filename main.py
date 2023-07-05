@@ -29,7 +29,6 @@ if __name__ == '__main__':
     df_img = pd.DataFrame(columns=['Image Name', 'Prediction'])
     df_glcm = pd.DataFrame(columns=['Image Name'])
 
-
     if submit:
         if uploaded_files is not None:
             for img in uploaded_files:
@@ -37,9 +36,13 @@ if __name__ == '__main__':
                     gray = rgb_to_gray(img)
                     features, df_glcm_temp = feature_extraction(gray)
                     prediction = knn_model(features)
+                    if prediction[0] == 0:
+                        pred = 'happy'
+                    else:
+                        pred = 'sad'
                     pred_df = pd.DataFrame({
                         "Image Name": [img.name],
-                        "Prediction": [prediction[0]]
+                        "Prediction": pred
                     })
                     df_img = pd.concat([df_img, pred_df], ignore_index=True)
                     df_glcm_temp['Image Name'] = img.name
